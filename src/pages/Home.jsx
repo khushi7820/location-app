@@ -511,10 +511,19 @@ function AddressPage({ location, onBack, onSubmit }) {
   const [form, setForm] = useState({ addr:"", landmark:"", city:"", mobile:"" });
   const [errs, setErrs] = useState({});
 
-  useEffect(() => {
-    if (location?.sub) {
-      const parts = location.sub.split(",");
-      setForm(f => ({ ...f, city: parts[parts.length-2]?.trim() || parts[0]?.trim() || "" }));
+ useEffect(() => {
+   if (!location) return;
+if (location.sub) {
+  const parts = location.sub.split(",");
+    // "City Light Town, Athwa, Surat, Gujarat, India"
+// Surat = parts[parts.length - 3]
+const total = parts.length;
+const city = total >= 3
+  ? parts[total - 3]?.trim()
+  : parts[0]?.trim();
+      if (city && !/^\d/.test(city)) {
+        setForm(f => ({ ...f, city }));
+      }
     }
   }, [location]);
 
